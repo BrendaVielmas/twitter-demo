@@ -1,0 +1,35 @@
+.tweetBox {
+  width: 20rem;
+  margin: 1rem 1rem;
+  height: auto;
+  background-color: #39719e;
+  border-radius: 3px;
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  font-family: "Titillium Web", sans-serif;
+  font-size: 15px;
+  padding: 6px 24px;
+  text-align: justify;
+}
+.userName{
+  text-align: justify;
+  width: auto;
+  margin: .2rem;
+}
+.tweetBox > img {
+  float: left;
+  display: block;
+  width: 2rem;
+  height: auto;
+  margin: .2rem;
+}
+.linkMore{
+  float: right;
+  color: rgb(255, 255, 255);
+}
+
+@media only screen and (max-width: 767px) {
+  .tweetBox {
+    width: auto;
+  }
+}

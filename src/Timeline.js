@@ -1,111 +1,118 @@
-import React, {Component} from 'react';
-import TimelineResponse from './TimelineResponse.json';
-import './Timeline.css';
+/*import React, { Component } from "react";
+import Tweet from "./Tweet";
+import TimelineResponse from "./TimelineResponse.json";
+import "./Css/Timeline.css";
 class Timeline extends Component {
- 
-
-	render () {
-   
-		return (
-			<div className="TimelineBox">
-          {
-            TimelineResponse.map((tweetDetail, index)=>{
-              return <div class="tweetBox" data-aos='fade-up'>
-                <p>{tweetDetail.data.created_at}</p>
-                <p>{tweetDetail.data.text}</p>
-              </div>
-            })
-          };
-			</div>
-		)
-	}
-}
-export default Timeline;
-
-
-
-
-
-/*const https = require('https');
-const request = require('request');
-const util = require('util');
-
-const get = util.promisify(request.get);
-const post = util.promisify(request.post);
-
-const consumer_key = ''; // Add your API key here
-const consumer_secret = ''; // Add your API secret key here
-
-const bearerTokenURL = new URL('https://api.twitter.com/oauth2/token');
-const streamURL = new URL('https://api.twitter.com/labs/1/tweets/stream/sample');
-
-async function bearerToken (auth) {
-  const requestConfig = {
-    url: bearerTokenURL,
-    auth: {
-      user: consumer_key,
-      pass: consumer_secret,
-    },
-    form: {
-      grant_type: 'client_credentials',
-    },
-    headers: {
-      'User-Agent': 'TwitterDevSampledStreamQuickStartJS',
-    },
-  };
-
-  const response = await post(requestConfig);
-  return JSON.parse(response.body).access_token;
-}
-
-function streamConnect(token) {
-  // Listen to the stream
-  const config = {
-    url: 'https://api.twitter.com/labs/1/tweets/stream/sample?format=compact',
-    auth: {
-      bearer: token,
-    },
-    headers: {
-      'User-Agent': 'TwitterDevSampledStreamQuickStartJS',
-    },
-    timeout: 20000,
-  };
-
-  const stream = request.get(config);
-
-  stream.on('data', data => {
-    try {
-      const json = JSON.parse(data);
-      console.log(json);
-    } catch (e) {
-      // Keep alive signal received. Do nothing.
-    }
-  }).on('error', error => {
-    if (error.code === 'ETIMEDOUT') {
-      stream.emit('timeout');
-    }
-  });
-
-  return stream;
-}
-
-(async () => {
-  let token;
-
-  try {
-    // Exchange your credentials for a Bearer token
-    token = await bearerToken({consumer_key, consumer_secret});
-  } catch (e) {
-    console.error(`Could not generate a Bearer token. Please check that your credentials are correct and that the Sampled Stream preview is enabled in your Labs dashboard. (${e})`);
-    process.exit(-1);
+  constructor(props) {
+    super(props);
+    this.state = { tweets: [] };
+  }
+  componentDidMount() {
+    let deploy = "https://ancient-temple-88525.herokuapp.com/api/tweets/NASA";
+    fetch(deploy)
+      .then(data => data.json())
+      .then(data =>
+        this.setState({
+          tweets: data
+        })
+      );
   }
 
-  const stream = streamConnect(token);
-  stream.on('timeout', () => {
-    // Reconnect on error
-    console.warn('A connection error occurred. Reconnecting…');
-    streamConnect(token);
-  });
-})();
+  render() {
+    return (
+      <div className="TimelineBox">
+        {this.state.tweets.map(function(tweet) {
+          return (
+            <Tweet
+              key={tweet.id}
+              text={tweet.text}
+              user={tweet.user}
+              photo={tweet.photo}
+              url={tweet.entities.urls[0]}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+}
 
-*/
+export default Timeline;*/
+
+import React, { Component } from "react";
+import Tweet from "./Tweet";
+import "./Css/Timeline.css";
+import InfiniteScroll from 'react-infinite-scroller';
+
+const tweetsList = [];
+const api = {
+  baseUrl: "https://ancient-temple-88525.herokuapp.com/api/tweets/NASA"
+};
+
+class Timeline extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tweets: [],
+      hasMoreItems: true,
+      lastId: null
+    };
+  }
+
+  loadItems(page) {
+    var self = this;
+
+    var url = api.baseUrl;
+    if (this.state.lastId) {
+      url += "?last_id=" + this.state.lastId;
+    }
+    fetch(url)
+      .then(data => data.json())
+      .then(data => {
+        if (data.lenght == 0) {
+          self.setState({
+            hasMoreItems: false
+          });
+        } else {
+          var tweets = self.state.tweets;
+          data.map(tweet => {
+            tweets.push(tweet);
+          });
+          this.setState({
+            tweets: tweets,
+            lastId: data[data.length - 1].id_str
+          });
+        }
+      });
+  }
+
+  render() {
+    const loader = <div className="loader">Loading ...</div>;
+
+    var items = [];
+    this.state.tweets.map((tweet, i) => {
+      items.push(
+        <Tweet
+          key={tweet.id}
+          text={tweet.text}
+          user={tweet.user}
+          photo={tweet.photo}
+          url={tweet.entities.urls[0]}
+        />
+      );
+    });
+
+    return (
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={this.loadItems.bind(this)}
+        hasMore={this.state.hasMoreItems}
+        loader={loader}
+      >
+        <div className="TimelineBox">{items}</div>
+      </InfiniteScroll>
+    );
+  }
+}
+export default Timeline;

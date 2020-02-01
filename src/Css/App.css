@@ -1,17 +1,16 @@
-
-body{
+body {
   background: rgb(0, 0, 0);
 }
 .App {
   text-align: center;
   display: block;
 }
-.titleApp{
+.titleApp {
   display: flex;
   width: auto;
 }
 .spacemanImg {
-  position:fixed;
+  position: fixed;
   right: -7rem;
   z-index: -1;
 }
@@ -25,10 +24,9 @@ body{
   margin-top: -7rem;
 }
 .socialMedia > a {
-  margin: .2rem;
+  margin: 0.2rem;
 }
-@media only screen and (min-width: 1024px) and (max-width: 1024px) { 
-  
+@media only screen and (min-width: 1024px) and (max-width: 1024px) {
   .socialMedia {
     margin-right: -2rem;
     margin-top: -4rem;
@@ -37,8 +35,7 @@ body{
     width: 100%;
   }
 }
-@media only screen and (min-width: 768px) and (max-width: 1023px) { 
-  
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
   body {
     columns: 2;
   }
@@ -49,13 +46,12 @@ body{
     display: inline-block;
     width: 100%;
   }
-  .titleApp{
+  .titleApp {
     width: 100%;
   }
 }
 
 @media only screen and (max-width: 767px) {
-  
   .socialMedia {
     float: right;
     margin-right: auto;
