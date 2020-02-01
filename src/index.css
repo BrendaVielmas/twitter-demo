@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.App, canvas {
+  display: block;
+}
+canvas {
+  margin-top: 0;
+  margin-bottom: 0;
+  position: fixed;
+  z-index: -1;
+}
